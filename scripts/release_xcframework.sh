@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-GODOT_PLUGINS="gamecenter inappstore icloud camera arkit apn photo_picker"
+GODOT_PLUGINS="webkit"
 
 # Compile Plugin
 for lib in $GODOT_PLUGINS; do
@@ -20,4 +20,6 @@ for lib in $GODOT_PLUGINS; do
     mkdir ./bin/release/${lib}
     mv ./bin/${lib}.{release,debug}.xcframework ./bin/release/${lib}
     cp ./plugins/${lib}/${lib}.gdip ./bin/release/${lib}
+
+    cp -r ./bin/release/${lib} ./demo/ios/plugins/
 done
