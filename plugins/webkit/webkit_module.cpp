@@ -1,12 +1,6 @@
 #include "webkit_module.h"
 
-#include "core/version.h"
-
-#if VERSION_MAJOR == 4
 #include "core/config/engine.h"
-#else
-#include "core/engine.h"
-#endif
 
 #include "webkit.h"
 

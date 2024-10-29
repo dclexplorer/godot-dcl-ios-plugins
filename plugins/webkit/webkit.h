@@ -1,13 +1,8 @@
 #ifndef WEB_KIT_H
 #define WEB_KIT_H
 
-#include "core/version.h"
-
-#if VERSION_MAJOR == 4
 #include "core/object/class_db.h"
-#else
-#include "core/object.h"
-#endif
+#include "core/version.h"
 
 #ifdef __OBJC__
 @class ASWebAuthenticationSession;

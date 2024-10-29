@@ -1,4 +1,5 @@
 #include "webkit.h"
+#include "core/version.h"
 #import <SafariServices/SafariServices.h>
 #import <AuthenticationServices/AuthenticationServices.h>
 
@@ -107,7 +108,7 @@ void WebKit::_bind_methods() {
 }
 
 void WebKit::print_version() {
-    printf("WebKit Version %s\n", WEBKIT_VERSION);
+    printf("WebKit Version %s - Godot: %s\n", WEBKIT_VERSION, VERSION_FULL_NAME);
 }
 
 void WebKit::open_auth_url(String url) {
