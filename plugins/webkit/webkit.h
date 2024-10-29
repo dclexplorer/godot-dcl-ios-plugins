@@ -28,7 +28,7 @@ class WebKit : public Object {
 
 public:
     void print_version();
-    void open_auth_url(String url, String notification_message);
+    void open_auth_url(String url);
 
     static WebKit *get_singleton();
 

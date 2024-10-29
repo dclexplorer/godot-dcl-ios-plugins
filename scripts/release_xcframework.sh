@@ -5,8 +5,9 @@ GODOT_PLUGINS="webkit"
 
 # Compile Plugin
 for lib in $GODOT_PLUGINS; do
-    ./scripts/generate_xcframework.sh $lib release $1
-    ./scripts/generate_xcframework.sh $lib release_debug $1
+    echo "# Compile ${lib}"
+    ./scripts/generate_xcframework.sh $lib release
+    ./scripts/generate_xcframework.sh $lib release_debug
     mv ./bin/${lib}.release_debug.xcframework ./bin/${lib}.debug.xcframework
 done
 
@@ -17,9 +18,10 @@ mkdir ./bin/release
 
 # Move Plugin
 for lib in $GODOT_PLUGINS; do
+    echo "# Move ${lib}"
     mkdir ./bin/release/${lib}
     mv ./bin/${lib}.{release,debug}.xcframework ./bin/release/${lib}
     cp ./plugins/${lib}/${lib}.gdip ./bin/release/${lib}
 
-    cp -r ./bin/release/${lib} ./demo/ios/plugins/
+    rsync -av --delete ./bin/release/${lib} ./demo/ios/plugins/
 done

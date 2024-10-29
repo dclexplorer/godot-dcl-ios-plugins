@@ -20,12 +20,11 @@ env = DefaultEnvironment()
 
 # Define our options
 opts.Add(EnumVariable('target', "Compilation target", 'debug', ['debug', 'release', "release_debug"]))
-opts.Add(EnumVariable('arch', "Compilation Architecture", '', ['', 'arm64', 'armv7', 'x86_64']))
+opts.Add(EnumVariable('arch', "Compilation Architecture", '', ['', 'arm64', 'x86_64']))
 opts.Add(BoolVariable('simulator', "Compilation platform", 'no'))
 opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
 opts.Add(PathVariable('target_path', 'The path where the lib is installed.', 'bin/'))
 opts.Add(EnumVariable('plugin', 'Plugin to build', '', ['', 'webkit']))
-opts.Add(EnumVariable('version', 'Godot version to target', '', ['', '4.0']))
 
 # Updates the environment with the option variables.
 opts.Update(env)
@@ -41,10 +40,6 @@ if env['arch'] == '':
 
 if env['plugin'] == '':
     print("No valid plugin selected.")
-    quit();
-
-if env['version'] == '':
-    print("No valid Godot version selected.")
     quit();
 
 # For the reference:
@@ -90,80 +85,32 @@ env.Prepend(CXXFLAGS=[
 ])
 env.Append(LINKFLAGS=["-arch", env['arch'], '-isysroot', sdk_path, '-F' + sdk_path])
 
-if env['arch'] == 'armv7':
-    env.Prepend(CXXFLAGS=['-fno-aligned-allocation'])
+env.Prepend(CFLAGS=['-std=gnu11'])
+env.Prepend(CXXFLAGS=['-DVULKAN_ENABLED', '-std=gnu++17'])
 
-if env['version'] == '3.x':
-    env.Prepend(CFLAGS=['-std=gnu11'])
-    env.Prepend(CXXFLAGS=['-DGLES_ENABLED', '-std=gnu++14'])
-
-    if env['target'] == 'debug':
-        env.Prepend(CXXFLAGS=[
-            '-gdwarf-2', '-O0', 
-            '-DDEBUG_MEMORY_ALLOC', '-DDISABLE_FORCED_INLINE', 
-            '-D_DEBUG', '-DDEBUG=1', '-DDEBUG_ENABLED',
-            '-DPTRCALL_ENABLED',
-        ])
-    elif env['target'] == 'release_debug':
-        env.Prepend(CXXFLAGS=['-O2', '-ftree-vectorize',
-            '-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1', '-DDEBUG_ENABLED', 
-            '-DPTRCALL_ENABLED',
-        ])
-
-        if env['arch'] != 'armv7':
-            env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])
-    else:
-        env.Prepend(CXXFLAGS=[
-            '-O2', '-ftree-vectorize',
-            '-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1', 
-            '-DPTRCALL_ENABLED',
-        ])
-
-        if env['arch'] != 'armv7':
-            env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])
-elif env['version'] == '4.0':
-    env.Prepend(CFLAGS=['-std=gnu11'])
-    env.Prepend(CXXFLAGS=['-DVULKAN_ENABLED', '-std=gnu++17'])
-
-    if env['target'] == 'debug':
-        env.Prepend(CXXFLAGS=[
-            '-gdwarf-2', '-O0', 
-            '-DDEBUG_MEMORY_ALLOC', '-DDISABLE_FORCED_INLINE', 
-            '-D_DEBUG', '-DDEBUG=1', '-DDEBUG_ENABLED', 
-        ])
-    elif env['target'] == 'release_debug':
-        env.Prepend(CXXFLAGS=[
-            '-O2', '-ftree-vectorize',
-            '-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1', '-DDEBUG_ENABLED',
-        ])
-
-        if env['arch'] != 'armv7':
-            env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])
-    else:
-        env.Prepend(CXXFLAGS=[
-            '-O2', '-ftree-vectorize',
-            '-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1',
-        ])
-
-        if env['arch'] != 'armv7':
-            env.Prepend(CXXFLAGS=['-fomit-frame-pointer'])            
+if env['target'] == 'debug':
+    env.Prepend(CXXFLAGS=[
+        '-gdwarf-2', '-O0', 
+        '-DDEBUG_MEMORY_ALLOC', '-DDISABLE_FORCED_INLINE', 
+        '-D_DEBUG', '-DDEBUG=1', '-DDEBUG_ENABLED', 
+    ])
+elif env['target'] == 'release_debug':
+    env.Prepend(CXXFLAGS=[
+        '-O2', '-ftree-vectorize',
+        '-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1', '-DDEBUG_ENABLED',
+    ])
 else:
-    print("No valid version to set flags for.")
-    quit();
+    env.Prepend(CXXFLAGS=[
+        '-O2', '-ftree-vectorize',
+        '-DNDEBUG', '-DNS_BLOCK_ASSERTIONS=1',
+    ])
 
 # Adding header files
-if env['version'] == '3.x':
-    env.Append(CPPPATH=[
-        '.', 
-        'godot', 
-        'godot/platform/iphone',
-    ])
-else:
-       env.Append(CPPPATH=[
-        '.', 
-        'godot', 
-        'godot/platform/ios',
-    ])
+env.Append(CPPPATH=[
+    '.', 
+    'godot', 
+    'godot/platform/ios',
+])
 
 # tweak this if you want to use different folders, or more folders, to store your source code in.
 sources = Glob('plugins/' + env['plugin'] + '/*.cpp')

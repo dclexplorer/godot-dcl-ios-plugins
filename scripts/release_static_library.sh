@@ -4,8 +4,8 @@ GODOT_PLUGINS="webkit"
 
 # Compile Plugin
 for lib in $GODOT_PLUGINS; do
-    ./scripts/generate_static_library.sh $lib release $1
-    ./scripts/generate_static_library.sh $lib release_debug $1
+    ./scripts/generate_static_library.sh $lib release
+    ./scripts/generate_static_library.sh $lib release_debug
     mv ./bin/${lib}.release_debug.a ./bin/${lib}.debug.a
 done
 
