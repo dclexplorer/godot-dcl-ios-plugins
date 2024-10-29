@@ -1,3 +1,4 @@
 # Godot 4+ specific ignores
 .godot/
-/ios/
+/ios/plugins/*
+!/ios/plugins/.gitkeep
