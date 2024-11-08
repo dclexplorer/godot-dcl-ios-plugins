@@ -115,7 +115,7 @@ void WebKit::open_auth_url(String url) {
     #if TARGET_OS_IOS
     NSString *ns_url = [NSString stringWithUTF8String:url.utf8().get_data()];
     NSURL *ns_nsurl = [NSURL URLWithString:ns_url];
-    NSString *callbackScheme = @"dcldao";
+    NSString *callbackScheme = @"decentraland";
 
     // Initialize the helper delegate with portrait enforcement
     authDelegate = [[WebKitAuthenticationDelegate alloc] init];
