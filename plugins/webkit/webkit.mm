@@ -144,6 +144,26 @@ void WebKit::open_auth_url(String url) {
     #endif
 }
 
+void WebKit::open_webview_url(String url) {
+    #if TARGET_OS_IOS
+    NSString *ns_url = [NSString stringWithUTF8String:url.utf8().get_data()];
+    NSURL *ns_nsurl = [NSURL URLWithString:ns_url];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Create Safari View Controller
+        SFSafariViewController *safariVC = [[SFSafariViewController alloc] initWithURL:ns_nsurl];
+        safariVC.modalPresentationStyle = UIModalPresentationPageSheet;
+
+        // Get the top-most view controller
+        UIViewController *rootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+        while (rootVC.presentedViewController) {
+            rootVC = rootVC.presentedViewController;
+        }
+
+        [rootVC presentViewController:safariVC animated:YES completion:nil];
+    });
+    #endif
+}
 
 WebKit *WebKit::get_singleton() {
     return instance;

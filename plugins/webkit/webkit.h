@@ -24,6 +24,7 @@ class WebKit : public Object {
 public:
     void print_version();
     void open_auth_url(String url);
+    void open_webview_url(String url);
 
     static WebKit *get_singleton();
 
